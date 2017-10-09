@@ -1,0 +1,6 @@
+{"databaserw":
+ {"user": "ldm",
+  "host": "localhost",
+  "password": "secret",
+  "name": "id3b"}
+}
