@@ -9,7 +9,7 @@ import psycopg2
 
 def do_search(wmo_ttaaii, wmo_source, awips_id):
     """Make search great again"""
-    pgconn = psycopg2.connect(database='id3b', host='localhost')
+    pgconn = psycopg2.connect(database='id3b', host='localhost', user='nobody')
     cursor = pgconn.cursor()
     sql = []
     args = []
