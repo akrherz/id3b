@@ -1,4 +1,5 @@
 var DT;
+var request;
 
 function buildUI(){
 	DT = $("#res").DataTable();
@@ -7,7 +8,7 @@ function buildUI(){
 		var awips_id = $("#awips_id").val();
 		var wmo_source = $("#wmo_source").val();
 		var wmo_ttaaii = $("#wmo_ttaaii").val();
-		$.ajax({
+		request = $.ajax({
 			url: '/services/search.py',
 			data: {
 				awips_id: awips_id,
@@ -16,6 +17,9 @@ function buildUI(){
 			},
 			method: 'GET',
 			dataType: 'json',
+			beforeSend: function(){
+				if (request != null) request.abort();
+			},
 			success: function(res){
 				DT.clear()
 				$.each(res.products, function(idx, product){
