@@ -15,4 +15,4 @@ CREATE TABLE ldm_product_log(
   awips_id varchar(6)
 );
 GRANT ALL on ldm_product_log to ldm;
-GRANT SELECT on ldm_product_log to nobody,apache;
+GRANT SELECT on ldm_product_log to nobody;
