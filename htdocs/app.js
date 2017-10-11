@@ -46,6 +46,10 @@ function buildUI(){
 			}, 200); // 200ms of delay before we act on some change
 		}
 	});
+	$("#mrf").click(function(){
+		update();
+		$(this).blur();
+	});
 }
 
 

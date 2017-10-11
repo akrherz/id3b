@@ -27,7 +27,9 @@ $t->content = <<<EOM
 database of LDM IDD Products.  This application was driven by a
 <a href="https://github.com/Unidata/unidata-usercomm/issues/14">Unidata Users Committee idea</a>
 to provide some details on what flows over the IDD. Everything you see here
-is in flux and could use your feedback!</p>
+is in flux and could use <a href="https://github.com/akrherz/id3b/issues">your feedback</a>! This database is based on IDD node at Iowa State
+of <code>metfs1.agron.iastate.edu</code> and <strong>does not feed the full suite of products</strong> from Unidata.
+You can find the exact upstreams with its <a href="https://github.com/akrherz/ldmconfig/blob/master/metfs1/ldmd.conf">ldmd.conf file</a>.</p>
 
 <form id="searchform">
 <div class="row">
@@ -52,6 +54,12 @@ is in flux and could use your feedback!</p>
     <input data-current="" type="text" class="form-control" id="awips_id" placeholder="AFDDMX">
   </div>
 </div>
+
+<div class="col-md-3">
+  <button type="button" id="mrf" class="btn btn-default">Manual Table Refresh</button>
+</div>
+</div><!-- ./row -->
+
 </form>
 
 <div class="clearfix"></div>
