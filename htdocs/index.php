@@ -16,7 +16,7 @@ EOM;
 
 $t->jsextra = <<<EOM
 <script src="/vendor/jquery-datatables/1.10.16/datatables.min.js"></script>
-<script src="app.js"></script>
+<script src="app.js?v=2"></script>
 EOM;
 
 $t->content = <<<EOM
@@ -35,26 +35,28 @@ is in flux and could use your feedback!</p>
 <div class="col-md-3">
   <div class="form-group">
     <label for="wmo_ttaaii"><i class="glyphicon glyphicon-search"></i> WMO TTAAII</label>
-    <input type="text" class="form-control" id="wmo_ttaaii" placeholder="FXUS63">
+    <input data-current="" type="text" class="form-control" id="wmo_ttaaii" placeholder="FXUS63">
   </div>
 </div>
 
 <div class="col-md-3">
   <div class="form-group">
     <label for="wmo_source"><i class="glyphicon glyphicon-search"></i> WMO Source</label>
-    <input type="text" class="form-control" id="wmo_source" placeholder="KDMX">
+    <input data-current="" type="text" class="form-control" id="wmo_source" placeholder="KDMX">
   </div>
 </div>
 
 <div class="col-md-3">
   <div class="form-group">
     <label for="awips_id"><i class="glyphicon glyphicon-search"></i> AWIPS ID</label>
-    <input type="text" class="form-control" id="awips_id" placeholder="AFDDMX">
+    <input data-current="" type="text" class="form-control" id="awips_id" placeholder="AFDDMX">
   </div>
 </div>
-
-
 </form>
+
+<div class="clearfix"></div>
+<p>Results shown generated at <span id="generated_at">...</span> in <span id="generation_time">...</span> seconds.</p>
+
 
 <div class="row">
 <div class="col-xs-12">

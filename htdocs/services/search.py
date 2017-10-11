@@ -3,24 +3,33 @@
 import json
 import cgi
 import sys
+import datetime
 
 import psycopg2
 
 
+def get_subsql(colname, fullwidth, param):
+    """Generate fancy sql subquery with some optimizations"""
+    if len(param) == fullwidth:
+        return " %s = %%s" % (colname, )
+    return " strpos(%s, %%s) > 0 " % (colname, )
+
+
 def do_search(wmo_ttaaii, wmo_source, awips_id):
     """Make search great again"""
+    sts = datetime.datetime.utcnow()
     pgconn = psycopg2.connect(database='id3b', host='localhost', user='nobody')
     cursor = pgconn.cursor()
     sql = []
     args = []
     if awips_id != "":
-        sql.append(" awips_id ~* %s ")
+        sql.append(get_subsql("awips_id", 6, awips_id))
         args.append(awips_id)
     if wmo_source != "":
-        sql.append(" wmo_source ~* %s ")
+        sql.append(get_subsql("wmo_source", 4, wmo_source))
         args.append(wmo_source)
     if wmo_ttaaii != "":
-        sql.append(" wmo_ttaaii ~* %s ")
+        sql.append(get_subsql("wmo_ttaaii", 6, wmo_ttaaii))
         args.append(wmo_ttaaii)
     if sql:
         sql = "(%s)" % (" and ".join(sql), )
@@ -48,6 +57,9 @@ def do_search(wmo_ttaaii, wmo_source, awips_id):
             'awips_id': row[5],
             'valid_at': row[6],
             'wmo_valid_at': row[7]})
+    res['generation_time[secs]'] = round((datetime.datetime.utcnow() -
+                                          sts).total_seconds(), 3)
+    res['generated_at'] = sts.strftime("%Y-%m-%dT%H:%M:%SZ")
     sys.stdout.write(json.dumps(res))
 
 
