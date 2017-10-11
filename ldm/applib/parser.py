@@ -39,7 +39,7 @@ def parser(bindata):
         md5sum = (''.join(chr(i) for i in md5sum)).encode('hex')
         prodsize = struct.unpack("I", bindata.read(4))[0]
         # print("   product size is %s" % (prodsize, ))
-        (seconds, microseconds) = struct.unpack("QI", bindata.read(12))
+        (seconds, microseconds) = struct.unpack("Qi", bindata.read(12))
         seconds += microseconds / 1000000.
         valid = EPOCH + datetime.timedelta(seconds=seconds)
         valid = valid.replace(tzinfo=pytz.utc)
