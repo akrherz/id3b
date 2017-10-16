@@ -15,7 +15,7 @@ def get_subsql(colname, fullwidth, param):
     return " strpos(%s, %%s) > 0 " % (colname, )
 
 
-def do_search(wmo_ttaaii, wmo_source, awips_id):
+def do_search(wmo_ttaaii, wmo_source, awips_id, product_id):
     """Make search great again"""
     sts = datetime.datetime.utcnow()
     pgconn = psycopg2.connect(database='id3b', host='localhost', user='nobody')
@@ -31,6 +31,9 @@ def do_search(wmo_ttaaii, wmo_source, awips_id):
     if wmo_ttaaii != "":
         sql.append(get_subsql("wmo_ttaaii", 6, wmo_ttaaii))
         args.append(wmo_ttaaii)
+    if product_id != "":
+        sql.append(get_subsql("product_id", -1, product_id))
+        args.append(product_id)
     if sql:
         sql = "(%s)" % (" and ".join(sql), )
     else:
@@ -44,7 +47,7 @@ def do_search(wmo_ttaaii, wmo_source, awips_id):
     to_char(valid_at at time zone 'UTC', 'YYYY-MM-DDThh24:MI:SSZ') as vat,
     to_char(wmo_valid_at at time zone 'UTC', 'YYYY-MM-DDThh24:MI:SSZ') as wat
     from ldm_product_log where """ + sql + """
-    ORDER by entered_at DESC LIMIT 100
+    ORDER by entered_at DESC LIMIT 500
     """, args)
     res = {'products': []}
     for row in cursor:
@@ -70,7 +73,8 @@ def main():
     awips_id = form.getfirst('awips_id', '')[:6].upper()
     wmo_source = form.getfirst('wmo_source', '')[:4].upper()
     wmo_ttaaii = form.getfirst('wmo_ttaaii', '')[:6].upper()
-    do_search(wmo_ttaaii, wmo_source, awips_id)
+    product_id = form.getfirst('product_id', '')
+    do_search(wmo_ttaaii, wmo_source, awips_id, product_id)
 
 
 if __name__ == '__main__':

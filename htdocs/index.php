@@ -8,7 +8,7 @@ $t->title = "Unidata IDD Database Demonstration";
 $t->headextra = <<<EOM
 <link rel="stylesheet" href="/vendor/jquery-datatables/1.10.16/datatables.min.css" />
 <style>
-input {
+input.caps {
   text-transform: uppercase;
 }
 </style>
@@ -34,28 +34,35 @@ You can find the exact upstreams with its <a href="https://github.com/akrherz/ld
 <form id="searchform">
 <div class="row">
 
-<div class="col-md-3">
+<div class="col-md-2">
   <div class="form-group">
     <label for="wmo_ttaaii"><i class="glyphicon glyphicon-search"></i> WMO TTAAII</label>
-    <input data-current="" type="text" class="form-control" id="wmo_ttaaii" placeholder="FXUS63">
+    <input data-current="" type="text" class="form-control caps" id="wmo_ttaaii" placeholder="FXUS63">
   </div>
 </div>
 
-<div class="col-md-3">
+<div class="col-md-2">
   <div class="form-group">
     <label for="wmo_source"><i class="glyphicon glyphicon-search"></i> WMO Source</label>
-    <input data-current="" type="text" class="form-control" id="wmo_source" placeholder="KDMX">
+    <input data-current="" type="text" class="form-control caps" id="wmo_source" placeholder="KDMX">
   </div>
 </div>
 
-<div class="col-md-3">
+<div class="col-md-2">
   <div class="form-group">
     <label for="awips_id"><i class="glyphicon glyphicon-search"></i> AWIPS ID</label>
-    <input data-current="" type="text" class="form-control" id="awips_id" placeholder="AFDDMX">
+    <input data-current="" type="text" class="form-control caps" id="awips_id" placeholder="AFDDMX">
   </div>
 </div>
 
-<div class="col-md-3">
+<div class="col-md-2">
+  <div class="form-group">
+    <label for="product_id"><i class="glyphicon glyphicon-search"></i> Product ID</label>
+    <input data-current="" type="text" class="form-control" id="product_id" placeholder="/pAFDDMX">
+  </div>
+</div>
+
+<div class="col-md-2">
   <button type="button" id="mrf" class="btn btn-default">Manual Table Refresh</button>
 </div>
 </div><!-- ./row -->
@@ -63,7 +70,8 @@ You can find the exact upstreams with its <a href="https://github.com/akrherz/ld
 </form>
 
 <div class="clearfix"></div>
-<p>Results shown generated at <span id="generated_at">...</span> in <span id="generation_time">...</span> seconds.</p>
+<p>Results shown generated at <span id="generated_at">...</span> in
+<span id="generation_time">...</span> seconds. <img src="/images/wait24trans.gif" id="spinner"></p>
 
 
 <div class="row">
