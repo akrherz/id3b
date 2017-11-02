@@ -36,6 +36,9 @@ def compute_wmo_time(valid, ddhhmm):
     if day < 5 and valid.day > 24:
         # Next month
         valid += datetime.timedelta(days=15)
+    if day > 24 and valid.day < 5:
+        # previous month
+        valid -= datetime.timedelta(days=15)
     return valid.replace(day=day, hour=int(ddhhmm[2:4]),
                          minute=int(ddhhmm[4:6]), second=0,
                          microsecond=0)
