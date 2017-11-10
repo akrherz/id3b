@@ -18,7 +18,7 @@ def get_subsql(colname, fullwidth, param):
 def do_search(wmo_ttaaii, wmo_source, awips_id, product_id):
     """Make search great again"""
     sts = datetime.datetime.utcnow()
-    pgconn = psycopg2.connect(database='id3b', host='localhost', user='nobody')
+    pgconn = psycopg2.connect(database='id3b', host='iemdb', user='nobody')
     cursor = pgconn.cursor()
     sql = []
     args = []
