@@ -14,7 +14,7 @@ import psycopg2
 
 def process(date):
     """Process this date please"""
-    pgconn = psycopg2.connect(database='id3b', host='localhost')
+    pgconn = psycopg2.connect(database='id3b', host='iemdb')
     cursor = pgconn.cursor()
     df = read_sql("""
     SELECT * from ldm_product_log WHERE
@@ -38,7 +38,7 @@ def process(date):
 
 def main(argv):
     """Go Main Go"""
-    pgconn = psycopg2.connect(database='id3b', host='localhost')
+    pgconn = psycopg2.connect(database='id3b', host='iemdb')
     cursor = pgconn.cursor()
     cursor.execute("""
     SELECT distinct date(entered_at at time zone 'UTC') from ldm_product_log
