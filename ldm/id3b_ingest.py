@@ -16,7 +16,7 @@ from twisted.enterprise import adbapi
 
 from applib.parser import parser
 
-WMO_RE = re.compile((r"^([0-9A-Z]{4,6}) ([A-Z0-9]{4}) ([0-9]{6})( [A-Z]{3})?"
+WMO_RE = re.compile((r"^([0-9A-Za-z]{4,6}) ([A-Z0-9]{4}) ([0-9]{6})( [A-Z]{3})?"
                      r"( /p[A-Z0-9]{3,6})?"))
 syslog.startLogging(prefix='id3b_ingest', facility=LOG_LOCAL2)
 CFGFN = "%s/settings.json" % (os.path.join(os.path.dirname(__file__),
