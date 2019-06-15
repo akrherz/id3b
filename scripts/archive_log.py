@@ -3,8 +3,8 @@
     python archive_log.py
 """
 from __future__ import print_function
-import sys
 import os
+import json
 import datetime
 
 import pytz
@@ -12,13 +12,11 @@ from pandas.io.sql import read_sql
 import psycopg2
 
 
-def process(date):
+def process(pgconn, date):
     """Process this date please"""
-    pgconn = psycopg2.connect(database='id3b', host='iemdb')
-    cursor = pgconn.cursor()
     df = read_sql("""
-    SELECT * from ldm_product_log WHERE
-    entered_at >= %s and entered_at < %s
+        SELECT * from ldm_product_log WHERE
+        entered_at >= %s and entered_at < %s
     """, pgconn, params=(date, date + datetime.timedelta(hours=24)),
                   index_col=None)
     basedir = date.strftime("/data/id3b/%Y/%m")
@@ -29,6 +27,7 @@ def process(date):
         print("Cowardly refusing archive_log dump for %s" % (csvfn, ))
         return
     df.to_csv(csvfn, compression='bz2')
+    cursor = pgconn.cursor()
     cursor.execute("""
     DELETE from ldm_product_log where entered_at >= %s and entered_at < %s
     """, (date, date + datetime.timedelta(hours=24)))
@@ -36,9 +35,14 @@ def process(date):
     pgconn.commit()
 
 
-def main(argv):
+def main():
     """Go Main Go"""
-    pgconn = psycopg2.connect(database='id3b', host='iemdb')
+    CFGFN = "%s/settings.json" % (
+        os.path.join(os.path.dirname(__file__), "../config"),)
+    CONFIG = json.load(open(CFGFN))
+    DBOPTS = CONFIG['databaserw']
+    pgconn = psycopg2.connect(
+        database=DBOPTS['name'], host=DBOPTS['host'], user=DBOPTS['user'])
     cursor = pgconn.cursor()
     cursor.execute("""
     SELECT distinct date(entered_at at time zone 'UTC') from ldm_product_log
@@ -48,8 +52,8 @@ def main(argv):
         date = datetime.datetime(year=row[0].year, month=row[0].month,
                                  day=row[0].day)
         date = date.replace(tzinfo=pytz.utc)
-        process(date)
+        process(pgconn, date)
 
 
 if __name__ == '__main__':
-    main(sys.argv)
+    main()
