@@ -7,6 +7,21 @@ import datetime
 
 import psycopg2
 
+# protocol2/ldm5.h
+LDM_FEEDTYPE_XREF = {
+    4: 'HDS',
+    11: 'IDS|DDPLUS',
+    32: 'UNIWISC',
+    4096: 'CONDUIT',
+    8192: 'FNEXRAD',
+    16384: 'LIGHTNING',
+    2097152: 'NIMAGE',
+    8388608: 'NGRID',
+    134217728: 'NEXRAD',
+    268435456: 'NEXRAD2',
+    1073741824: 'EXP',
+}
+
 
 def get_subsql(colname, fullwidth, param):
     """Generate fancy sql subquery with some optimizations"""
@@ -18,7 +33,8 @@ def get_subsql(colname, fullwidth, param):
 def do_search(wmo_ttaaii, wmo_source, awips_id, product_id):
     """Make search great again"""
     sts = datetime.datetime.utcnow()
-    pgconn = psycopg2.connect(database='id3b', host='iemdb', user='nobody')
+    pgconn = psycopg2.connect(
+        database='id3b', host='iemdb.local', user='nobody')
     cursor = pgconn.cursor()
     sql = []
     args = []
@@ -41,7 +57,7 @@ def do_search(wmo_ttaaii, wmo_source, awips_id, product_id):
         args = ('ADDMX', 'KDMX')
 
     cursor.execute("""
-    SELECT wmo_ttaaii, wmo_source,
+    SELECT ldm_feedtype, wmo_ttaaii, wmo_source,
     to_char(entered_at at time zone 'UTC', 'YYYY-MM-DDThh24:MI:SSZ') as eat,
     size, product_id, awips_id,
     to_char(valid_at at time zone 'UTC', 'YYYY-MM-DDThh24:MI:SSZ') as vat,
@@ -52,14 +68,15 @@ def do_search(wmo_ttaaii, wmo_source, awips_id, product_id):
     res = {'products': []}
     for row in cursor:
         res['products'].append({
-            'wmo_ttaaii': row[0],
-            'wmo_source': row[1],
-            'entered_at': row[2],
-            'size': row[3],
-            'product_id': row[4],
-            'awips_id': row[5],
-            'valid_at': row[6],
-            'wmo_valid_at': row[7]})
+            'feedtype': LDM_FEEDTYPE_XREF.get(row[0], str(row[0])),
+            'wmo_ttaaii': row[1],
+            'wmo_source': row[2],
+            'entered_at': row[3],
+            'size': row[4],
+            'product_id': row[5],
+            'awips_id': row[6],
+            'valid_at': row[7],
+            'wmo_valid_at': row[8]})
     res['generation_time[secs]'] = round((datetime.datetime.utcnow() -
                                           sts).total_seconds(), 3)
     res['generated_at'] = sts.strftime("%Y-%m-%dT%H:%M:%SZ")

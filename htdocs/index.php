@@ -16,7 +16,7 @@ EOM;
 
 $t->jsextra = <<<EOM
 <script src="/vendor/jquery-datatables/1.10.16/datatables.min.js"></script>
-<script src="app.js?v=2"></script>
+<script src="app.js?v=3"></script>
 EOM;
 
 $t->content = <<<EOM
@@ -80,7 +80,9 @@ You can find the exact upstreams with its <a href="https://github.com/akrherz/ld
 <div class="col-xs-12">
 <table id="res" data-order='[[ 0, "desc" ]]'>
 <thead>
-<tr><th>Received At</th>
+<tr>
+<th>Feedtype</th>
+<th>Received At</th>
 <th>Ingested At</th>
 <th>WMO Valid At</th>
 <th>Size</th><th>TTAAII</th><th>Source</th>

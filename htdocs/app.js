@@ -28,6 +28,7 @@ function update(){
 			DT.clear()
 			$.each(res.products, function(idx, product){
 				DT.row.add([
+                    product.feedtype,
 					product.entered_at, product.valid_at,
 					product.wmo_valid_at, product.size,
 					product.wmo_ttaaii, product.wmo_source,
