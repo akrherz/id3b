@@ -34,7 +34,7 @@ def do_search(wmo_ttaaii, wmo_source, awips_id, product_id):
     """Make search great again"""
     sts = datetime.datetime.utcnow()
     pgconn = psycopg2.connect(
-        database='id3b', host='iemdb.local', user='nobody')
+        database='id3b', host='iemdb-id3b.local', user='nobody')
     cursor = pgconn.cursor()
     sql = []
     args = []
