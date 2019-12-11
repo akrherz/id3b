@@ -45,8 +45,9 @@ def parser(bindata):
             break
         bindata.seek(bindata.tell() - (msgsize - 4))
         # print("Message of size: %s" % (msgsize, ))
-        md5sum = struct.unpack("16B", bindata.read(16))
-        md5sum = ("".join(chr(i) for i in md5sum)).encode("hex")
+        md5sum = "".join(
+            [format(i, "02x") for i in struct.unpack("16B", bindata.read(16))]
+        )
         prodsize = struct.unpack("I", bindata.read(4))[0]
         # print("   product size is %s" % (prodsize, ))
         (seconds, microseconds) = struct.unpack("Qi", bindata.read(12))

@@ -1,7 +1,7 @@
 """Our fancy pants ingest of LDM product metadata"""
 from __future__ import print_function
 from syslog import LOG_LOCAL2
-import StringIO
+from io import BytesIO
 import json
 import os
 import re
@@ -119,14 +119,14 @@ class IngestorProtocol(basic.LineReceiver):
         """ Process a chunk of data """
         # print("Got %s bytes" % (len(data), ))
         #
-        self.leftover, msgs = parser(StringIO.StringIO(self.leftover + data))
+        self.leftover, msgs = parser(BytesIO(self.leftover + data))
         if msgs:
             df = DBPOOL.runInteraction(save_msgs, msgs)
             df.addErrback(handle_error)
         else:
             if len(self.leftover) > 8000:
                 print("ABORT RESET, leftover size is too large!")
-                self.leftover = ""
+                self.leftover = b""
 
 
 class LDMProductFactory(stdio.StandardIO):
