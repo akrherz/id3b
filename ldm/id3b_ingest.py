@@ -81,6 +81,7 @@ def save_msgs(txn, msgs):
                 wmo_time = compute_wmo_time(msg.valid, wmo_time)
             except Exception as exp:
                 print("%s valid: %s wmo_time: %s" % (exp, msg.valid, wmo_time))
+                continue
         txn.execute(
             """
         INSERT into ldm_product_log
