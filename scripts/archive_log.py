@@ -41,10 +41,11 @@ def process(pgconn, date):
     )
     cursor.close()
     pgconn.commit()
+    remotedir = date.strftime("/stage/id3b/%Y/%m")
     cmd = (
         "rsync -a --remove-source-files "
-        f'--rsync-path "mkdir -p /stage/id3b/{date.year} && rsync" '
-        f"{csvfn} meteor_ldm@metl60.agron.iastate.edu:/stage/id3b/{date.year}/"
+        f'--rsync-path "mkdir -p {remotedir} && rsync" '
+        f"{csvfn} meteor_ldm@metl60.agron.iastate.edu:{remotedir}"
     )
     subprocess.call(cmd, shell=True)
 
