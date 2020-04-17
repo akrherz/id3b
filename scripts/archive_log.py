@@ -4,6 +4,7 @@
 """
 from __future__ import print_function
 import os
+import subprocess
 import json
 import datetime
 
@@ -40,6 +41,12 @@ def process(pgconn, date):
     )
     cursor.close()
     pgconn.commit()
+    cmd = (
+        "rsync -a --remove-source-files "
+        f'--rsync-path "mkdir -p /stage/id3b/{date.year} && rsync" '
+        f"{csvfn} meteor_ldm@metl60.agron.iastate.edu:/stage/id3b/{date.year}/"
+    )
+    subprocess.call(cmd, shell=True)
 
 
 def main():
