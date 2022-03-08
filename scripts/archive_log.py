@@ -29,7 +29,7 @@ def process(DBOPTS, pgconn, date):
     if os.path.isfile(csvfn):
         print(f"Cowardly refusing archive_log dump for {csvfn}")
         return
-    df.to_csv(csvfn, compression="bz2")
+    df.to_csv(csvfn, compression="bz2", index=False)
     cursor = pgconn.cursor()
     cursor.execute(
         "DELETE from ldm_product_log "
