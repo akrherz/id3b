@@ -22,10 +22,7 @@ def process(DBOPTS, pgconn, date):
         params=(date, date + datetime.timedelta(hours=24)),
         index_col=None,
     )
-    basedir = date.strftime("/data/id3b/%Y/%m")
-    if not os.path.isdir(basedir):
-        os.makedirs(basedir)
-    csvfn = basedir + date.strftime("/%Y%m%d.csv.bz2")
+    csvfn = date.strftime("/tmp/%Y%m%d.csv.bz2")
     if os.path.isfile(csvfn):
         print(f"Cowardly refusing archive_log dump for {csvfn}")
         return

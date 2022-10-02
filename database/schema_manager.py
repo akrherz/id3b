@@ -15,7 +15,7 @@ TABLE = "schema_manager_version"
 
 
 def check_management(cursor):
-    """ Make sure we have management of this database """
+    """Make sure we have management of this database"""
     cursor.execute(
         """
          select * from pg_tables where schemaname = 'public'
@@ -41,7 +41,7 @@ def check_management(cursor):
 
 
 def run_db(dbname):
-    """ Lets do an actual database """
+    """Lets do an actual database"""
     dbopts = CONFIG["databaserw"]
     dbconn = psycopg2.connect(
         database=dbopts["name"],
@@ -62,7 +62,7 @@ def run_db(dbname):
     )
     row = cursor.fetchone()
     baseversion = row[0]
-    print (
+    print(
         ("Database: %-15s has revision: %3s (%s)")
         % (dbname, baseversion, row[1].strftime("%Y-%m-%d %H:%M"))
     )
@@ -72,7 +72,7 @@ def run_db(dbname):
         fn = "%s/%s.sql" % (dbname, baseversion)
         if not os.path.isfile(fn):
             break
-        print "    -> Attempting schema upgrade #%s ..." % (baseversion,)
+        print("    -> Attempting schema upgrade #%s ..." % (baseversion,))
         cursor.execute(open(fn).read())
 
         cursor.execute(
@@ -89,12 +89,12 @@ def run_db(dbname):
         cursor.close()
         dbconn.commit()
     else:
-        print "    + No changes made since argument provided"
+        print("    + No changes made since argument provided")
     dbconn.close()
 
 
 def main():
-    """ Go Main Go """
+    """Go Main Go"""
     os.chdir("upgrade")
     for dbname in os.listdir("."):
         run_db(dbname)

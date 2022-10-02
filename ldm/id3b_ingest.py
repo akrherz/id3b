@@ -111,13 +111,13 @@ class IngestorProtocol(basic.LineReceiver):
     """Go"""
 
     def connectionLost(self, reason):
-        """ Called when the STDIN connection is lost """
+        """Called when the STDIN connection is lost"""
         log.msg("connectionLost")
         log.err(reason)
         reactor.callLater(15, reactor.callWhenRunning, reactor.stop)
 
     def dataReceived(self, data):
-        """ Process a chunk of data """
+        """Process a chunk of data"""
         # print("Got %s bytes" % (len(data), ))
         #
         self.leftover, msgs = parser(BytesIO(self.leftover + data))
@@ -134,7 +134,7 @@ class LDMProductFactory(stdio.StandardIO):
     """Go"""
 
     def __init__(self, protocol, **kwargs):
-        """ constructor with a protocol instance """
+        """constructor with a protocol instance"""
         stdio.StandardIO.__init__(self, protocol, **kwargs)
 
 

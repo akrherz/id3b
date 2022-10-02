@@ -6,7 +6,7 @@ from ..parser import parser
 
 
 def get_filepath(name):
-    """ Helper function to get the text file contents """
+    """Helper function to get the text file contents"""
     basedir = os.path.dirname(__file__)
     return "%s/../../../examples/%s" % (basedir, name)
 
