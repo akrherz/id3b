@@ -26,8 +26,8 @@ LDM_FEEDTYPE_XREF = {
 def get_subsql(colname, fullwidth, param):
     """Generate fancy sql subquery with some optimizations"""
     if len(param) == fullwidth:
-        return " %s = %%s" % (colname,)
-    return " strpos(%s, %%s) > 0 " % (colname,)
+        return f" {colname} = %s"
+    return f" strpos({colname}, %s) > 0 "
 
 
 def do_search(wmo_ttaaii, wmo_source, awips_id, product_id):
@@ -52,21 +52,19 @@ def do_search(wmo_ttaaii, wmo_source, awips_id, product_id):
         sql.append(get_subsql("product_id", -1, product_id))
         args.append(product_id)
     if sql:
-        sql = "(%s)" % (" and ".join(sql),)
+        sql = f"({' and '.join(sql)})"
     else:
         sql = "(awips_id = %s and wmo_source = %s)"
         args = ("ADDMX", "KDMX")
 
     cursor.execute(
-        """
+        f"""
     SELECT ldm_feedtype, wmo_ttaaii, wmo_source,
     to_char(entered_at at time zone 'UTC', 'YYYY-MM-DDThh24:MI:SSZ') as eat,
     size, product_id, awips_id,
     to_char(valid_at at time zone 'UTC', 'YYYY-MM-DDThh24:MI:SSZ') as vat,
     to_char(wmo_valid_at at time zone 'UTC', 'YYYY-MM-DDThh24:MI:SSZ') as wat
-    from ldm_product_log where """
-        + sql
-        + """
+    from ldm_product_log where {sql}
     ORDER by entered_at DESC LIMIT 500
     """,
         args,
