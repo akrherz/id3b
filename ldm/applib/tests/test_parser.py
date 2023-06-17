@@ -1,6 +1,6 @@
 """Test our parser"""
-import unittest
 import os
+import unittest
 
 from ..parser import parser
 

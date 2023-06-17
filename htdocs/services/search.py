@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 """Service for searching for products"""
-import json
 import cgi
-import sys
 import datetime
+import json
+import sys
 
 import psycopg2
 

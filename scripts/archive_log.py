@@ -2,14 +2,14 @@
 
     python archive_log.py
 """
+import datetime
+import json
 import os
 import subprocess
-import json
-import datetime
 
+import psycopg2
 import pytz
 from pandas import read_sql
-import psycopg2
 
 
 def process(DBOPTS, pgconn, date):

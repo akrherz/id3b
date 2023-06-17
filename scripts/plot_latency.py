@@ -1,10 +1,10 @@
 """A flamish graph per 5 March 2022 debacle."""
 from zoneinfo import ZoneInfo
 
-import pandas as pd
-import numpy as np
-from matplotlib.lines import Line2D
 import matplotlib.dates as mdates
+import numpy as np
+import pandas as pd
+from matplotlib.lines import Line2D
 from pyiem.plot import figure_axes
 from pyiem.util import get_sqlalchemy_conn
 
@@ -15,22 +15,28 @@ def main():
     """Do Things."""
     with get_sqlalchemy_conn("id3b") as conn:
         df = pd.read_sql(
-            "select valid_at at time zone 'UTC' as valid, wmo_source, "
-            "valid_at - wmo_valid_at as latency from mar5 "
-            "WHERE ldm_feedtype = 11 and entered_at > '2022-03-5 13:00' "
-            "and entered_at < '2022-03-5 19:00' and "
-            "extract(minute from wmo_valid_at) > 0 and "
-            "wmo_source not in ('KWAL', 'KWOH', 'KWBC', 'KWNB', 'KWNO', 'KAWN') and "
-            "substr(wmo_source, 1, 1) = 'K' "
-            "and substr(awips_id, 1, 3) not in ('RR3', 'HML', 'RR2', 'RRS', 'LSR', 'LLL') "
-            "ORDER by valid ASC",
+            """
+            select valid_at at time zone 'UTC' as valid, wmo_source,
+            valid_at - wmo_valid_at as latency from mar5
+            WHERE ldm_feedtype = 11 and entered_at > '2022-03-5 13:00'
+            and entered_at < '2022-03-5 19:00' and
+            extract(minute from wmo_valid_at) > 0 and
+            wmo_source not in ('KWAL', 'KWOH', 'KWBC', 'KWNB', 'KWNO', 'KAWN')
+            and substr(wmo_source, 1, 1) = 'K'
+            and substr(awips_id, 1, 3)
+             not in ('RR3', 'HML', 'RR2', 'RRS', 'LSR', 'LLL')
+            ORDER by valid ASC
+            """,
             conn,
             index_col="valid",
         )
     df["seconds"] = df["latency"] / np.timedelta64(1, "s")
     (fig, ax) = figure_axes(
         title="NWS Text Product Dissemination Latency",
-        subtitle="Based on difference between NOAAPort receipt time and product WMO valid time.",
+        subtitle=(
+            "Based on difference between NOAAPort receipt time "
+            "and product WMO valid time."
+        ),
         apctx={"_r": "43"},
     )
     ax.scatter(df.index.values, df["seconds"].values, alpha=1)
