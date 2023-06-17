@@ -4,9 +4,9 @@
 
      python schema_manager.py
 """
+import json
 import os
 import sys
-import json
 
 import psycopg2
 

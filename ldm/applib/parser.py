@@ -1,7 +1,8 @@
 """My parser"""
 from __future__ import print_function
-import struct
+
 import datetime
+import struct
 from collections import namedtuple
 
 import pytz

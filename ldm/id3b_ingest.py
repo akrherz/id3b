@@ -1,20 +1,18 @@
 """Our fancy pants ingest of LDM product metadata"""
 from __future__ import print_function
-from syslog import LOG_LOCAL2
-from io import BytesIO
+
+import datetime
 import json
 import os
 import re
-import datetime
-
-from twisted.python import log, syslog
-from twisted.internet import stdio
-from twisted.internet import reactor
-from twisted.protocols import basic
-from twisted.enterprise import adbapi
-
+from io import BytesIO
+from syslog import LOG_LOCAL2
 
 from applib.parser import parser
+from twisted.enterprise import adbapi
+from twisted.internet import reactor, stdio
+from twisted.protocols import basic
+from twisted.python import log, syslog
 
 WMO_RE = re.compile(
     (
