@@ -1,0 +1,41 @@
+# Continuous Integration with Github Actions
+name: Continuous Integration
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    defaults:
+      run:
+        # Ensures environment gets sourced right
+        shell: bash -l {0}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        PYTHON_VERSION: ["3.9", "3.10", "3.11"]
+    env:
+      PYTHON_VERSION: ${{ matrix.PYTHON_VERSION }}
+    
+    steps:
+    - uses: actions/checkout@v4
+      name: Checkout
+
+    # setup conda-forge with micromamba
+    - name: Setup Python 
+      uses: mamba-org/setup-micromamba@v1
+      with:
+        condarc: |
+          channels:
+            - conda-forge
+            - defaults
+        create-args: >-
+          python=${{ env.PYTHON_VERSION }}
+        environment-name: prod
+
+    # run tests
+    - name: Run tests
+      run: |
+        pytest ldm/applib
