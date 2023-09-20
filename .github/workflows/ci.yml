@@ -36,7 +36,18 @@ jobs:
           python=${{ env.PYTHON_VERSION }}
         environment-name: prod
 
-    # run tests
+    # run tests and generate coverage report
     - name: Run tests
       run: |
-        pytest ldm/applib
+        coverage run -m pytest --source=ldm/applib
+        coverage xml
+
+    # create and upload coverage report to codecov
+    - name: Upload coverage to Codecov
+      if: ${{ env.PYTHON_VERSION == '3.11' }}
+      uses: codecov/codecov-action@v3
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      with:
+        file: coverage.xml
+        fail_ci_if_error: true
