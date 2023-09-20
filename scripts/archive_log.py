@@ -6,9 +6,9 @@ import datetime
 import json
 import os
 import subprocess
+from zoneinfo import ZoneInfo
 
 import psycopg2
-import pytz
 from pandas import read_sql
 
 
@@ -67,7 +67,7 @@ def main():
         date = datetime.datetime(
             year=row[0].year, month=row[0].month, day=row[0].day
         )
-        date = date.replace(tzinfo=pytz.utc)
+        date = date.replace(tzinfo=ZoneInfo("UTC"))
         process(DBOPTS, pgconn, date)
 
 
