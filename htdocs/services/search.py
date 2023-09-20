@@ -5,7 +5,7 @@ import datetime
 import json
 import sys
 
-import psycopg2
+import psycopg
 
 # protocol2/ldm5.h
 LDM_FEEDTYPE_XREF = {
@@ -33,8 +33,8 @@ def get_subsql(colname, fullwidth, param):
 def do_search(wmo_ttaaii, wmo_source, awips_id, product_id):
     """Make search great again"""
     sts = datetime.datetime.utcnow()
-    pgconn = psycopg2.connect(
-        database="id3b", host="iemdb-id3b.local", user="nobody"
+    pgconn = psycopg.connect(
+        dbname="id3b", host="iemdb-id3b.local", user="nobody"
     )
     cursor = pgconn.cursor()
     sql = []

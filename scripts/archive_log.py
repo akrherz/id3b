@@ -8,7 +8,7 @@ import os
 import subprocess
 from zoneinfo import ZoneInfo
 
-import psycopg2
+import psycopg
 from pandas import read_sql
 
 
@@ -54,8 +54,8 @@ def main():
     with open(CFGFN, encoding="utf-8") as fh:
         CONFIG = json.load(fh)
     DBOPTS = CONFIG["databaserw"]
-    pgconn = psycopg2.connect(
-        database=DBOPTS["name"], host=DBOPTS["host"], user=DBOPTS["user"]
+    pgconn = psycopg.connect(
+        dbname=DBOPTS["name"], host=DBOPTS["host"], user=DBOPTS["user"]
     )
     cursor = pgconn.cursor()
     cursor.execute(
