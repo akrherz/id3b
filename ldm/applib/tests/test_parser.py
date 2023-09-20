@@ -12,7 +12,7 @@ def get_filepath(name):
 
 def test_parser():
     """Can we parse it, yes we can"""
-    data = open(get_filepath("data.bin"), "rb")
-    leftover, res = parser(data)
+    with open(get_filepath("data.bin"), "rb") as fh:
+        leftover, res = parser(fh)
     assert len(res) == 3
     assert not leftover
