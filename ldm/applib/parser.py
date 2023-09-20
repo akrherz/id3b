@@ -1,11 +1,8 @@
 """My parser"""
-from __future__ import print_function
-
 import datetime
 import struct
 from collections import namedtuple
-
-import pytz
+from zoneinfo import ZoneInfo
 
 EPOCH = datetime.datetime(1970, 1, 1)
 METAMSG = namedtuple(
@@ -54,7 +51,7 @@ def parser(bindata):
         (seconds, microseconds) = struct.unpack("Qi", bindata.read(12))
         seconds += microseconds / 1000000.0
         valid = EPOCH + datetime.timedelta(seconds=seconds)
-        valid = valid.replace(tzinfo=pytz.utc)
+        valid = valid.replace(tzinfo=ZoneInfo("UTC"))
         # print("    valid is: %s" % (valid, ))
         feedtype = struct.unpack("I", bindata.read(4))[0]
         seqnum = struct.unpack("I", bindata.read(4))[0]

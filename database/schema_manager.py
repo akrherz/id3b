@@ -8,7 +8,7 @@ import json
 import os
 import sys
 
-import psycopg2
+import psycopg
 
 CONFIG = json.load(open("../config/settings.json"))
 TABLE = "schema_manager_version"
@@ -25,26 +25,16 @@ def check_management(cursor):
     )
     if cursor.rowcount == 0:
         cursor.execute(
-            """
-        CREATE TABLE """
-            + TABLE
-            + """
-            (version int, updated timestamptz)
-        """
+            f"CREATE TABLE {TABLE} (version int, updated timestamptz)"
         )
-        cursor.execute(
-            """INSERT into """
-            + TABLE
-            + """
-        VALUES (0, now())"""
-        )
+        cursor.execute(f"INSERT into {TABLE} VALUES (0, now())")
 
 
 def run_db(dbname):
     """Lets do an actual database"""
     dbopts = CONFIG["databaserw"]
-    dbconn = psycopg2.connect(
-        database=dbopts["name"],
+    dbconn = psycopg.connect(
+        dbname=dbopts["name"],
         host=dbopts["host"],
         user=dbopts["user"],
         password=dbopts["password"],
@@ -53,13 +43,7 @@ def run_db(dbname):
 
     check_management(cursor)
 
-    cursor.execute(
-        """
-        SELECT version, updated from """
-        + TABLE
-        + """
-    """
-    )
+    cursor.execute(f"SELECT version, updated from {TABLE}")
     row = cursor.fetchone()
     baseversion = row[0]
     print(

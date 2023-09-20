@@ -1,6 +1,4 @@
 """Our fancy pants ingest of LDM product metadata"""
-from __future__ import print_function
-
 import datetime
 import json
 import os
@@ -27,8 +25,8 @@ CFGFN = "%s/settings.json" % (
 CONFIG = json.load(open(CFGFN))
 DBOPTS = CONFIG["databaserw"]
 DBPOOL = adbapi.ConnectionPool(
-    "psycopg2",
-    database=DBOPTS["name"],
+    "psycopg",
+    dbname=DBOPTS["name"],
     cp_reconnect=True,
     cp_max=20,
     host=DBOPTS["host"],

@@ -1,11 +1,9 @@
-#!/usr/bin/env python
 """Service for searching for products"""
-import cgi
 import datetime
 import json
-import sys
 
-import psycopg2
+import psycopg
+from paste.request import parse_formvars
 
 # protocol2/ldm5.h
 LDM_FEEDTYPE_XREF = {
@@ -33,8 +31,8 @@ def get_subsql(colname, fullwidth, param):
 def do_search(wmo_ttaaii, wmo_source, awips_id, product_id):
     """Make search great again"""
     sts = datetime.datetime.utcnow()
-    pgconn = psycopg2.connect(
-        database="id3b", host="iemdb-id3b.local", user="nobody"
+    pgconn = psycopg.connect(
+        dbname="id3b", host="iemdb-id3b.local", user="nobody"
     )
     cursor = pgconn.cursor()
     sql = []
@@ -84,23 +82,21 @@ def do_search(wmo_ttaaii, wmo_source, awips_id, product_id):
                 "wmo_valid_at": row[8],
             }
         )
+    pgconn.close()
     res["generation_time[secs]"] = round(
         (datetime.datetime.utcnow() - sts).total_seconds(), 3
     )
     res["generated_at"] = sts.strftime("%Y-%m-%dT%H:%M:%SZ")
-    sys.stdout.write(json.dumps(res))
+    return json.dumps(res)
 
 
-def main():
+def application(environ, start_response):
     """Attempt to do the right thing"""
-    sys.stdout.write("Content-type: application/json\n\n")
-    form = cgi.FieldStorage()
-    awips_id = form.getfirst("awips_id", "")[:6].upper()
-    wmo_source = form.getfirst("wmo_source", "")[:4].upper()
-    wmo_ttaaii = form.getfirst("wmo_ttaaii", "")[:6].upper()
-    product_id = form.getfirst("product_id", "")
-    do_search(wmo_ttaaii, wmo_source, awips_id, product_id)
-
-
-if __name__ == "__main__":
-    main()
+    fields = parse_formvars(environ)
+    awips_id = fields.get("awips_id", "")[:6].upper()
+    wmo_source = fields.get("wmo_source", "")[:4].upper()
+    wmo_ttaaii = fields.get("wmo_ttaaii", "")[:6].upper()
+    product_id = fields.get("product_id", "")
+    res = do_search(wmo_ttaaii, wmo_source, awips_id, product_id)
+    start_response("200 OK", [("Content-type", "application/json")])
+    return [res.encode("ascii")]
