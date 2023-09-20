@@ -39,7 +39,7 @@ jobs:
     # run tests and generate coverage report
     - name: Run tests
       run: |
-        coverage run -m pytest --source=ldm/applib
+        coverage run -m pytest
         coverage xml
 
     # create and upload coverage report to codecov
