@@ -1,7 +1,8 @@
 """Archive the ldm_product_log content for a given date
 
-    python archive_log.py
+python archive_log.py
 """
+
 import datetime
 import json
 import os

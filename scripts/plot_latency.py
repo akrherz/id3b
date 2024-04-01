@@ -1,4 +1,5 @@
 """A flamish graph per 5 March 2022 debacle."""
+
 from zoneinfo import ZoneInfo
 
 import matplotlib.dates as mdates
