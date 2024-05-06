@@ -1,4 +1,5 @@
 """My parser"""
+
 import datetime
 import struct
 from collections import namedtuple

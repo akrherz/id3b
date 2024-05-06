@@ -1,4 +1,5 @@
 """Service for searching for products"""
+
 import datetime
 import json
 
