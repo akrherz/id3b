@@ -1,4 +1,5 @@
 """Test our parser"""
+
 import os
 
 from ..parser import parser
