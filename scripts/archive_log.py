@@ -9,21 +9,21 @@ import os
 import subprocess
 from zoneinfo import ZoneInfo
 
+import pandas as pd
 import psycopg
-from pandas import read_sql
 
 
 def process(DBOPTS, pgconn, date):
     """Process this date please"""
     dsn = f"postgresql://{DBOPTS['user']}@{DBOPTS['host']}/{DBOPTS['name']}"
-    df = read_sql(
+    df = pd.read_sql(
         "SELECT * from ldm_product_log WHERE "
         "entered_at >= %s and entered_at < %s",
         dsn,
         params=(date, date + datetime.timedelta(hours=24)),
         index_col=None,
     )
-    csvfn = date.strftime("/tmp/%Y%m%d.csv.bz2")
+    csvfn = date.strftime("/mesonet/tmp/%Y%m%d.csv.bz2")
     if os.path.isfile(csvfn):
         print(f"Cowardly refusing archive_log dump for {csvfn}")
         return
