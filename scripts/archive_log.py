@@ -40,7 +40,7 @@ def process(DBOPTS, pgconn, date):
     cmd = (
         "rsync -a --remove-source-files "
         f'--rsync-path "mkdir -p {remotedir} && rsync" '
-        f"{csvfn} meteor_ldm@metl60.agron.iastate.edu:{remotedir}"
+        f"{csvfn} meteor_ldm@akrherz-desktop.agron.iastate.edu:{remotedir}"
     )
     subprocess.call(cmd, shell=True)
 
