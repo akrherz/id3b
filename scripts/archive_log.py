@@ -3,73 +3,69 @@
 python archive_log.py
 """
 
-import datetime
-import json
-import os
 import subprocess
-from zoneinfo import ZoneInfo
+from datetime import datetime, timedelta, timezone
 
-import pandas as pd
-import psycopg
+from psycopg import Connection
+from pyiem.database import get_dbconn
 
 
-def process(DBOPTS, pgconn, date):
+def process(pgconn: Connection, dt: datetime):
     """Process this date please"""
-    dsn = f"postgresql://{DBOPTS['user']}@{DBOPTS['host']}/{DBOPTS['name']}"
-    df = pd.read_sql(
-        "SELECT * from ldm_product_log WHERE "
-        "entered_at >= %s and entered_at < %s",
-        dsn,
-        params=(date, date + datetime.timedelta(hours=24)),
-        index_col=None,
+    cursor = pgconn.cursor("streamer")
+    cursor.execute(
+        """
+    select
+    to_char(entered_at at time zone 'UTC', 'YYYY-MM-DD HH24:MI:SS'),
+    md5sum, size,
+    to_char(valid_at at time zone 'UTC', 'YYYY-MM-DD HH24:MI:SS'),
+    ldm_feedtype, seqnum, product_id,
+    replace(product_origin, ',', '_'), wmo_ttaaii, wmo_source,
+    to_char(wmo_valid_at at time zone 'UTC', 'YYYY-MM-DD HH24:MI:SS'),
+    wmo_bbb, awips_id from ldm_product_log WHERE entered_at < %s
+    """,
+        (dt + timedelta(hours=24),),
     )
-    csvfn = date.strftime("/mesonet/tmp/%Y%m%d.csv.bz2")
-    if os.path.isfile(csvfn):
-        print(f"Cowardly refusing archive_log dump for {csvfn}")
-        return
-    df.to_csv(csvfn, compression="bz2", index=False)
+
+    csvfn = dt.strftime("/mesonet/tmp/%Y%m%d.csv")
+    with open(csvfn, "w") as fh:
+        fh.write(
+            "entered_at,md5sum,size,valid_at,ldm_feedtype,seqnum,"
+            "product_id,product_origin,wmo_ttaaii,wmo_source,wmo_valid_at,"
+            "wmo_bbb,awips_id\n"
+        )
+        for row in cursor:
+            fh.write(",".join([str(s) for s in row]) + "\n")
+    cursor.close()
+    # Now bz2 this file
+    subprocess.call(["bzip2", csvfn])
     cursor = pgconn.cursor()
     cursor.execute(
-        "DELETE from ldm_product_log "
-        "where entered_at >= %s and entered_at < %s",
-        (date, date + datetime.timedelta(hours=24)),
+        "DELETE from ldm_product_log where entered_at < %s",
+        (dt + timedelta(hours=24),),
     )
     cursor.close()
     pgconn.commit()
-    remotedir = date.strftime("/stage/id3b/%Y/%m")
-    cmd = (
-        "rsync -a --remove-source-files "
-        f'--rsync-path "mkdir -p {remotedir} && rsync" '
-        f"{csvfn} meteor_ldm@akrherz-desktop.agron.iastate.edu:{remotedir}"
-    )
-    subprocess.call(cmd, shell=True)
+    remotedir = dt.strftime("/stage/id3b/%Y/%m")
+    cmd = [
+        "rsync",
+        "-a",
+        "--remove-source-files",
+        "--rsync-path",
+        f"mkdir -p {remotedir} && rsync",
+        f"{csvfn}.bz2",
+        f"meteor_ldm@akrherz-desktop.agron.iastate.edu:{remotedir}",
+    ]
+    subprocess.call(cmd)
 
 
 def main():
     """Go Main Go"""
-    CFGFN = os.path.join(
-        os.path.dirname(__file__),
-        "../config",
-        "settings.json",
-    )
-    with open(CFGFN, encoding="utf-8") as fh:
-        CONFIG = json.load(fh)
-    DBOPTS = CONFIG["databaserw"]
-    pgconn = psycopg.connect(
-        dbname=DBOPTS["name"], host=DBOPTS["host"], user=DBOPTS["user"]
-    )
-    cursor = pgconn.cursor()
-    cursor.execute(
-        "SELECT distinct date(entered_at at time zone 'UTC') "
-        "from ldm_product_log where entered_at < now() - '3 days'::interval "
-        "ORDER by date ASC"
-    )
-    for row in cursor:
-        date = datetime.datetime(
-            year=row[0].year, month=row[0].month, day=row[0].day
-        )
-        date = date.replace(tzinfo=ZoneInfo("UTC"))
-        process(DBOPTS, pgconn, date)
+    # Compute 3 days ago
+    dt = datetime.now() - timedelta(days=3)
+    dt = datetime(dt.year, dt.month, dt.day, tzinfo=timezone.utc)
+    pgconn = get_dbconn("id3b")
+    process(pgconn, dt)
 
 
 if __name__ == "__main__":
