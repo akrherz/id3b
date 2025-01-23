@@ -1,5 +1,6 @@
 dependencies:
   - coverage
+  - pyiem
   - pytest
   - pytest-cov
   - twisted
