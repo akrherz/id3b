@@ -45,7 +45,7 @@ jobs:
     # create and upload coverage report to codecov
     - name: Upload coverage to Codecov
       if: ${{ env.PYTHON_VERSION == '3.12' }}
-      uses: codecov/codecov-action@v4
+      uses: codecov/codecov-action@v5
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         files: coverage.xml
