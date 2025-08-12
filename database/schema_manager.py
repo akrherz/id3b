@@ -11,7 +11,8 @@ import sys
 
 import psycopg
 
-CONFIG = json.load(open("../config/settings.json"))
+with open("../config/settings.json") as f:
+    CONFIG = json.load(f)
 TABLE = "schema_manager_version"
 
 
@@ -58,7 +59,8 @@ def run_db(dbname):
         if not os.path.isfile(fn):
             break
         print("    -> Attempting schema upgrade #%s ..." % (baseversion,))
-        cursor.execute(open(fn).read())
+        with open(fn) as ff:
+            cursor.execute(ff.read())
 
         cursor.execute(
             """

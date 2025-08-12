@@ -23,7 +23,8 @@ syslog.startLogging(prefix="id3b_ingest", facility=LOG_LOCAL2)
 CFGFN = "%s/settings.json" % (
     os.path.join(os.path.dirname(__file__), "../config"),
 )
-CONFIG = json.load(open(CFGFN))
+with open(CFGFN) as f:
+    CONFIG = json.load(f)
 DBOPTS = CONFIG["databaserw"]
 DBPOOL = adbapi.ConnectionPool(
     "psycopg",
