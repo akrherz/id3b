@@ -1,5 +1,8 @@
 # Continuous Integration with Github Actions
 name: Continuous Integration
+permissions:
+  contents: read
+  pull-requests: write
 on:
   push:
     branches: [ main ]
