@@ -23,7 +23,7 @@ jobs:
       PYTHON_VERSION: ${{ matrix.PYTHON_VERSION }}
     
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
       name: Checkout
 
     # setup conda-forge with micromamba
