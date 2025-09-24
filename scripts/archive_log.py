@@ -46,7 +46,7 @@ def process(pgconn: Connection, dt: datetime):
     )
     cursor.close()
     pgconn.commit()
-    remotedir = dt.strftime("/stage/id3b/%Y/%m")
+    remotedir = dt.strftime("/offline/id3b/%Y/%m")
     cmd = [
         "rsync",
         "-a",
