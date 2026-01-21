@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        PYTHON_VERSION: ["3.10", "3.11", "3.13"]
+        PYTHON_VERSION: ["3.10", "3.11", "3.14"]
     env:
       PYTHON_VERSION: ${{ matrix.PYTHON_VERSION }}
     
@@ -34,7 +34,6 @@ jobs:
         condarc: |
           channels:
             - conda-forge
-            - defaults
         create-args: >-
           python=${{ env.PYTHON_VERSION }}
         environment-name: prod
@@ -47,9 +46,8 @@ jobs:
 
     # create and upload coverage report to codecov
     - name: Upload coverage to Codecov
-      if: ${{ env.PYTHON_VERSION == '3.13' }}
+      if: ${{ env.PYTHON_VERSION == '3.14' }}
       uses: codecov/codecov-action@v5
       with:
-        token: ${{ secrets.CODECOV_TOKEN }}
         files: coverage.xml
         fail_ci_if_error: true
