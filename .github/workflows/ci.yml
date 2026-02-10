@@ -41,8 +41,8 @@ jobs:
     # run tests and generate coverage report
     - name: Run tests
       run: |
-        coverage run -m pytest
-        coverage xml
+        python -m pytest --cov=applib
+        python -m coverage xml
 
     # create and upload coverage report to codecov
     - name: Upload coverage to Codecov
