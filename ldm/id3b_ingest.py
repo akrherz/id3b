@@ -1,9 +1,9 @@
 """Our fancy pants ingest of LDM product metadata"""
 
-import datetime
 import json
 import os
 import re
+from datetime import timedelta
 from io import BytesIO
 from syslog import LOG_LOCAL2
 
@@ -42,10 +42,10 @@ def compute_wmo_time(valid, ddhhmm):
     day = int(ddhhmm[:2])
     if day < 5 and valid.day > 24:
         # Next month
-        valid += datetime.timedelta(days=15)
+        valid += timedelta(days=15)
     if day > 24 and valid.day < 5:
         # previous month
-        valid -= datetime.timedelta(days=15)
+        valid -= timedelta(days=15)
     return valid.replace(
         day=day,
         hour=int(ddhhmm[2:4]),

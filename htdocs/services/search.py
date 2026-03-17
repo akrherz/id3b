@@ -1,7 +1,7 @@
 """Service for searching for products"""
 
-import datetime
 import json
+from datetime import datetime, timezone
 
 import psycopg
 from paste.request import parse_formvars
@@ -31,7 +31,7 @@ def get_subsql(colname, fullwidth, param):
 
 def do_search(wmo_ttaaii, wmo_source, awips_id, product_id):
     """Make search great again"""
-    sts = datetime.datetime.utcnow()
+    sts = datetime.now(timezone.utc)
     pgconn = psycopg.connect(
         dbname="id3b", host="iemdb-id3b.local", user="nobody"
     )
@@ -85,7 +85,7 @@ def do_search(wmo_ttaaii, wmo_source, awips_id, product_id):
         )
     pgconn.close()
     res["generation_time[secs]"] = round(
-        (datetime.datetime.utcnow() - sts).total_seconds(), 3
+        (datetime.now(timezone.utc) - sts).total_seconds(), 3
     )
     res["generated_at"] = sts.strftime("%Y-%m-%dT%H:%M:%SZ")
     return json.dumps(res)
