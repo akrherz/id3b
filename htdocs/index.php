@@ -29,9 +29,8 @@ database of LDM IDD Products.  This application was driven by a
 to provide some details on what flows over the IDD. Everything you see here
 is in flux and could use <a href="https://github.com/akrherz/id3b/issues">your feedback</a>! This database is based on IDD node at Iowa State
 of <code>metfs1.agron.iastate.edu</code> and <strong>does not feed the full suite of products</strong> from Unidata.
-You can find the exact upstreams with its <a href="https://github.com/akrherz/ldmconfig/blob/master/metfs1/ldmd.conf">ldmd.conf file</a>.</p>
+You can find the exact upstreams with its <a href="https://github.com/akrherz/ldmconfig/blob/main/idd-dc/ldmd.conf">ldmd.conf file</a>.</p>
 
-<p><a href="https://iastate.box.com/s/j8ecfzq98cy8tf9asvu8vac0w9pbulz0">Raw UTC Daily Archive</a> of LDM Product Information.</p>
 
 <form id="searchform">
 <div class="row">
@@ -99,5 +98,3 @@ EOM;
 
 
 $t->render("single.phtml");
-
-?>
