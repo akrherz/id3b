@@ -22,7 +22,6 @@ METAMSG = namedtuple(
 
 def parser(bindata):
     """Process this bindata"""
-    # print("parser() called...")
     res = []
     leftover = b""
     while True:
@@ -30,30 +29,24 @@ def parser(bindata):
         if not sample:
             break
         if len(sample) != 4:
-            # print("    len(sample) is %s, so leftovers" % (len(sample), ))
             leftover = sample
             break
         msgsize = struct.unpack("I", sample)[0]
         # msgsize includes the msgsize :/
         msgdata = bindata.read(msgsize - 4)
         if len(msgdata) != (msgsize - 4):
-            # print(("    short read, msgsize: %s len(msgdata): %s"
-            #       ) % (msgsize, len(msgdata)))
             # short read
             leftover = sample + msgdata
             break
         bindata.seek(bindata.tell() - (msgsize - 4))
-        # print("Message of size: %s" % (msgsize, ))
         md5sum = "".join(
             [format(i, "02x") for i in struct.unpack("16B", bindata.read(16))]
         )
         prodsize = struct.unpack("I", bindata.read(4))[0]
-        # print("   product size is %s" % (prodsize, ))
         (seconds, microseconds) = struct.unpack("Qi", bindata.read(12))
         seconds += microseconds / 1000000.0
         valid = EPOCH + timedelta(seconds=seconds)
         valid = valid.replace(tzinfo=ZoneInfo("UTC"))
-        # print("    valid is: %s" % (valid, ))
         feedtype = struct.unpack("I", bindata.read(4))[0]
         seqnum = struct.unpack("I", bindata.read(4))[0]
         prodid_size = struct.unpack("I", bindata.read(4))[0]
@@ -68,7 +61,6 @@ def parser(bindata):
             chr(i)
             for i in struct.unpack(str(po_size) + "B", bindata.read(po_size))
         )
-        # print("    product_origin: %s" % (prod_orig, ))
         if seconds == 0:
             print("    skipping pqact initial empty message")
             continue
@@ -83,6 +75,4 @@ def parser(bindata):
                 product_origin=prod_orig,
             )
         )
-    # print(("parser() returning %s entries, len(leftover)=%s"
-    #        ) % (len(res), len(leftover)))
     return leftover, res
