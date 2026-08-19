@@ -63,7 +63,6 @@ def handle_error(err):
 def save_msgs(txn, msgs):
     """Persist our message"""
     for msg in msgs:
-        # print("%6s %s" % (msg.size, msg.product_id))
         tokens = WMO_RE.findall(msg.product_id)
         awips_id = None
         wmo_ttaaii = None
@@ -116,8 +115,6 @@ class IngestorProtocol(basic.LineReceiver):
 
     def dataReceived(self, data):
         """Process a chunk of data"""
-        # print("Got %s bytes" % (len(data), ))
-        #
         self.leftover, msgs = parser(BytesIO(self.leftover + data))
         if msgs:
             df = DBPOOL.runInteraction(save_msgs, msgs)
@@ -144,7 +141,7 @@ def main():
     # Something to store data between runs
     proto.leftover = b""
     _ = LDMProductFactory(proto)
-    reactor.run()  # @UndefinedVariable
+    reactor.run()
 
 
 if __name__ == "__main__":
