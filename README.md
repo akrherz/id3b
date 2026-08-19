@@ -3,7 +3,7 @@
 Unidata IDD Database
 
 The purpose of this repository is to create an LDM ingest tool and website that
-displays a catalog of what flows over the [Unidata IDD](http://www.unidata.ucar.edu/projects/index.html#idd). This is a project born out of the Unidata Users Committe.
+displays a catalog of what flows over the [Unidata IDD](http://www.unidata.ucar.edu/projects/index.html#idd). This is a project born out of the Unidata Users Committee.
 
 This code takes advantage of a nice feature of [pqact](https://www.unidata.ucar.edu/software/ldm/ldm-current/basics/pqact.conf.html) whereby product metadata is set over the pqact PIPE action
 
