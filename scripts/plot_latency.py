@@ -6,8 +6,8 @@ import matplotlib.dates as mdates
 import numpy as np
 import pandas as pd
 from matplotlib.lines import Line2D
+from pyiem.database import get_sqlalchemy_conn
 from pyiem.plot import figure_axes
-from pyiem.util import get_sqlalchemy_conn
 
 CST = ZoneInfo("America/Chicago")
 
