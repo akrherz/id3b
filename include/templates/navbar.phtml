@@ -1,4 +1,4 @@
-<?php 
+<?php
 if (isset($this)){
     $THISPAGE = array_key_exists('thispage', $this->vars)? $this->thispage : 'xxx-xxx';
 } else{
@@ -6,7 +6,7 @@ if (isset($this)){
 }
 $_pages = Array(
     "apps" => Array(
-        "title" => "Applications", 
+        "title" => "Applications",
         "subs" => Array(
             "map" => Array("title" => "Live Application", "url" => "/live/")
         ),
@@ -25,15 +25,15 @@ $_pages = Array(
     </div>
     <div class="navbar-collapse collapse">
         <ul class="nav navbar-nav">
-        
-<li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" 
+
+<li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown"
     href="#"> <span class="glyphicon glyphicon-home"></span> </a>
     <ul class="dropdown-menu">
         <li><a href="/">Iowa Environmental Mesonet</a></li>
         <li><a href="https://weather.im">Weather.IM</a></li>
     </ul></li>
-        
-<?php 
+
+<?php
 $ar = preg_split('/-/', $THISPAGE);
 function get_title($page){
     if (array_key_exists("icon", $page)){
@@ -46,14 +46,14 @@ function get_title($page){
 
 foreach($_pages as $idx => $page)
 {
-      echo sprintf("<li class=\"dropdown%s\">\n<a class=\"dropdown-toggle\" 
-        data-toggle=\"dropdown\" href=\"#\">%s</a>\n", 
+      echo sprintf("<li class=\"dropdown%s\">\n<a class=\"dropdown-toggle\"
+        data-toggle=\"dropdown\" href=\"#\">%s</a>\n",
       ($ar[0] == $idx) ? " active" : "", get_title($page));
 
     echo "<ul class=\"dropdown-menu\">\n";
     foreach($page["subs"] as  $idx2 => $page2)
     {
-       echo sprintf("<li><a%s href=\"%s\">%s</a></li>\n", 
+       echo sprintf("<li><a%s href=\"%s\">%s</a></li>\n",
          ($ar[1] == $idx2 && $ar[0] == $idx) ? " class=\"active\"" : "",
            $page2["url"],  $page2["title"] );
     }
