@@ -1,10 +1,10 @@
 """Our fancy pants ingest of LDM product metadata"""
 
 import json
-import os
 import re
 from datetime import timedelta
 from io import BytesIO
+from pathlib import Path
 from syslog import LOG_LOCAL2
 
 from applib.parser import parser
@@ -14,15 +14,11 @@ from twisted.protocols import basic
 from twisted.python import log, syslog
 
 WMO_RE = re.compile(
-    (
-        r"^([0-9A-Za-z]{4,6}) ([A-Z0-9]{4}) ([0-9]{6})( [A-Z]{3})?"
-        r"( /p[A-Z0-9]{3,6})?"
-    )
+    r"^([0-9A-Za-z]{4,6}) ([A-Z0-9]{4}) ([0-9]{6})( [A-Z]{3})?"
+    r"( /p[A-Z0-9]{3,6})?"
 )
 syslog.startLogging(prefix="id3b_ingest", facility=LOG_LOCAL2)
-CFGFN = "%s/settings.json" % (
-    os.path.join(os.path.dirname(__file__), "../config"),
-)
+CFGFN = Path(__file__).resolve().parent.parent / "config" / "settings.json"
 with open(CFGFN) as f:
     CONFIG = json.load(f)
 DBOPTS = CONFIG["databaserw"]
